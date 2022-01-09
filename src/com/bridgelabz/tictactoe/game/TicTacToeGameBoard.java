@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class TicTacToeGameBoard {
     //Playing Board Array for Locations
-    private static char[] boardArray = new char[10];
+    private static char[] playingBoard = new char[10];
     private static char player1Symbol,player2Symbol;
     private static int player1Play = 1;
 
@@ -19,7 +19,7 @@ public class TicTacToeGameBoard {
     //UC 1 Method for initializing board position
     private static void initializeBoard() {
         for(int i = 1; i < 10; i++) {
-            boardArray[i] = '_';
+            playingBoard[i] = '_';
         }
     }
 
@@ -27,12 +27,12 @@ public class TicTacToeGameBoard {
     private static void showBoard() {
         for (int i = 1; i < 10; i++) {
             if ((i) % 3 == 0) {
-                System.out.println(boardArray[i]);
+                System.out.println(playingBoard[i]);
                 if (i != 10 - 1) {
                     System.out.println("-----");
                 }
             } else {
-                System.out.print(boardArray[i] + "|");
+                System.out.print(playingBoard[i] + "|");
             }
         }
     }
@@ -73,17 +73,39 @@ public class TicTacToeGameBoard {
 
     //UC 4 Get User Input and Move on Board
     private static void playGame() {
-        initScanner();
         if(player1Play == 1) {
-            System.out.println("Player 1 Please Enter Your Position for Play : ");
-            int playerPosition = sc.nextInt();
-            boardArray[playerPosition] = player1Symbol;
+            getSymbol(1,player1Symbol);
         } else {
-            System.out.println("Player 2 Please Enter Your Position for Play : ");
-            int playerPosition = sc.nextInt();
-            boardArray[playerPosition] = player2Symbol;
+            getSymbol(2,player2Symbol);
         }
         setPlayChance();
+    }
+
+    //Methode for Getting Input From Player
+    private static void getSymbol(int playerNo,char symbol) {
+        initScanner();
+        int playerPosition;
+        System.out.println("Player "+playerNo+" Please Enter the Position for Your Play :");
+        playerPosition = sc.nextInt();
+        if(checkFreePosition(playerPosition)) {
+            playingBoard[playerPosition] = symbol;
+        } else {
+            playGame();
+            setPlayChance();
+        }
+    }
+
+    //Uc 5 Check for Free Space and Make Move
+    private static boolean checkFreePosition(int enteredPosition) {
+        if(enteredPosition < 1 || enteredPosition > 9) {
+            System.out.println("Please Enter the Position between 1 to 9 only.");
+            return false;
+        } else if(playingBoard[enteredPosition] != '_') {
+            System.out.println("Entered Location Contain Symbol. Please Enter Another Location.");
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public static void main(String[] args) {
