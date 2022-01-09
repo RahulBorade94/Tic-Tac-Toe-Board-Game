@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class TicTacToeGameBoard {
     //Playing Board Array for Locations
-    private static char[] boradArray = new char[10];
+    private static char[] boardArray = new char[10];
     private static char player1Symbol,player2Symbol;
     private static int player1Play = 1;
 
@@ -20,7 +20,7 @@ public class TicTacToeGameBoard {
     //UC 1 Method for initializing board position
     private static void initializeBoard() {
         for(int i = 1; i < 10; i++) {
-            boradArray[i] = '_';
+            boardArray[i] = '_';
         }
     }
 
@@ -28,12 +28,12 @@ public class TicTacToeGameBoard {
     private static void showBoard() {
         for (int i = 1; i < 10; i++) {
             if ((i) % 3 == 0) {
-                System.out.println(boradArray[i]);
+                System.out.println(boardArray[i]);
                 if (i != 10 - 1) {
                     System.out.println("-----");
                 }
             } else {
-                System.out.print(boradArray[i] + "|");
+                System.out.print(boardArray[i] + "|");
             }
         }
     }
@@ -75,7 +75,7 @@ public class TicTacToeGameBoard {
     //UC 4 Get User Input and Move on Board
     private static void playGame() {
         if(player1Play == 1) {
-            getSymbol(1,player1Symbol);
+            getSymbol(1, player1Symbol);
         } else {
             getSymbol(2,player2Symbol);
         }
@@ -89,7 +89,7 @@ public class TicTacToeGameBoard {
         System.out.println("Player "+playerNo+" Please Enter the Position for Your Play :");
         playerPosition = sc.nextInt();
         if(checkFreePosition(playerPosition)) {
-            boradArray[playerPosition] = symbol;
+            boardArray[playerPosition] = symbol;
         } else {
             playGame();
             setPlayChance();
@@ -101,7 +101,7 @@ public class TicTacToeGameBoard {
         if(enteredPosition < 1 || enteredPosition > 9) {
             System.out.println("Please Enter the Position between 1 to 9 only.");
             return false;
-        } else if(boradArray[enteredPosition] != '_') {
+        } else if(boardArray[enteredPosition] != '_') {
             System.out.println("Entered Location Contain Symbol. Please Enter Another Location.");
             return false;
         } else {
@@ -122,6 +122,66 @@ public class TicTacToeGameBoard {
         }
     }
 
+    //UC 7 Check for Winner or Draw
+    private static boolean checkWin() {
+        if(checkDraw()) {
+            System.out.println("The Game is DRAW. As there is no any location for Player Symbol.");
+            showBoard();
+            return true;
+        } else {
+            if(checkDiagonal() || checkColumnWin() || checkRowWin()) {
+                if(player1Play == 0) {
+                    System.out.println("Player 1 WON THE GAME !!!!");
+                } else {
+                    System.out.println("Player 2 WON THE GAME !!!!");
+                }
+                showBoard();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Method to check for Game Draw
+    private static boolean checkDraw() {
+        boolean flag = true;
+        for(int i = 1; i <= 9; i++) {
+            if(boardArray[i] == '_') {
+                flag = false;
+            }
+        }
+        return flag;
+    }
+
+    //Method to check for Diagonal Win
+    private static boolean checkDiagonal() {
+        if(!(boardArray[1] == '_') && boardArray[1] == boardArray[5] && boardArray[1] == boardArray[9]
+                || !(boardArray[3] == '_') && boardArray[3] == boardArray[5] && boardArray[3] == boardArray[7]) {
+            return true;
+        }
+        return false;
+    }
+
+    //Method to Check for Row Win
+    private static boolean checkRowWin() {
+        for(int i = 1; i < boardArray.length; i += 3) {
+            if(!(boardArray[i] == '_') && boardArray[i] == boardArray[i+1] && boardArray[i] == boardArray[i+2]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Method to Check for Column Win
+    private static boolean checkColumnWin() {
+        for(int i = 1; i <= 3; i++) {
+            if(!(boardArray[i] == '_') && boardArray[i] == boardArray[i+3] && boardArray[i] == boardArray[i+6]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
 
         //Tic Tac Toe Game Development
@@ -140,7 +200,7 @@ public class TicTacToeGameBoard {
         flipToss();
 
         //Play the Game till Win Or Draw
-        while(true) {
+        while(!checkWin()) {
             playGame();
             showBoard();
         }
