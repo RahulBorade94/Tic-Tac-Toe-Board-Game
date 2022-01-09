@@ -1,10 +1,11 @@
 package com.bridgelabz.tictactoe.game;
 
+import java.util.Random;
 import java.util.Scanner;
 
 public class TicTacToeGameBoard {
     //Playing Board Array for Locations
-    private static char[] playingBoard = new char[10];
+    private static char[] boradArray = new char[10];
     private static char player1Symbol,player2Symbol;
     private static int player1Play = 1;
 
@@ -19,7 +20,7 @@ public class TicTacToeGameBoard {
     //UC 1 Method for initializing board position
     private static void initializeBoard() {
         for(int i = 1; i < 10; i++) {
-            playingBoard[i] = '_';
+            boradArray[i] = '_';
         }
     }
 
@@ -27,12 +28,12 @@ public class TicTacToeGameBoard {
     private static void showBoard() {
         for (int i = 1; i < 10; i++) {
             if ((i) % 3 == 0) {
-                System.out.println(playingBoard[i]);
+                System.out.println(boradArray[i]);
                 if (i != 10 - 1) {
                     System.out.println("-----");
                 }
             } else {
-                System.out.print(playingBoard[i] + "|");
+                System.out.print(boradArray[i] + "|");
             }
         }
     }
@@ -88,7 +89,7 @@ public class TicTacToeGameBoard {
         System.out.println("Player "+playerNo+" Please Enter the Position for Your Play :");
         playerPosition = sc.nextInt();
         if(checkFreePosition(playerPosition)) {
-            playingBoard[playerPosition] = symbol;
+            boradArray[playerPosition] = symbol;
         } else {
             playGame();
             setPlayChance();
@@ -100,11 +101,24 @@ public class TicTacToeGameBoard {
         if(enteredPosition < 1 || enteredPosition > 9) {
             System.out.println("Please Enter the Position between 1 to 9 only.");
             return false;
-        } else if(playingBoard[enteredPosition] != '_') {
+        } else if(boradArray[enteredPosition] != '_') {
             System.out.println("Entered Location Contain Symbol. Please Enter Another Location.");
             return false;
         } else {
             return true;
+        }
+    }
+
+    //Uc 6 Make Toss for Player Chance
+    private static void flipToss() {
+        Random tossValue = new Random();
+        int toss = tossValue.nextInt(2)+1;
+        if(toss == 1) {
+            player1Play = 1;
+            System.out.println("Player 1 Won the Toss.");
+        } else {
+            player1Play = 0;
+            System.out.println("Player 2 Won the Toss.");
         }
     }
 
@@ -119,7 +133,13 @@ public class TicTacToeGameBoard {
         //Setting the Symbol for Play
         setPlayingSymbol();
 
+        //Showing the Initial Board
         showBoard();
+
+        //Flip the Toss for Player Play Chance
+        flipToss();
+
+        //Play the Game till Win Or Draw
         while(true) {
             playGame();
             showBoard();
